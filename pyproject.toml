@@ -9,6 +9,8 @@ python = "^3.9.0"
 scipy = "^1.5.4"
 
 [tool.poetry.dev-dependencies]
+notebook = "^6.1.5"
+matplotlib = "^3.3.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
