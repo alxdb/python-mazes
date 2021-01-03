@@ -7,24 +7,26 @@ import random
 def random_walk(size: int) -> Tuple[mazes.Maze, List[mazes.Coord]]:
     maze = mazes.Maze(size)
 
-    start = (random.randint(0, 1) * (size - 1), random.randrange(0, size))
-    if random.choice([True, False]):
-        start = (start[1], start[0])
+    start = (random.randrange(size), random.randrange(size))
 
     # random walk
     current = start
-    solution = []
+    current_solution = []
+    longest_solution = []
     while len(maze.paths) < (size * size):
         unvisited_neighbours = [
             neighbour for neighbour in maze.neighbours(current)
             if neighbour not in maze.paths
         ]
         if len(unvisited_neighbours) > 0:
-            solution.append(current)
+            current_solution.append(current)
             chosen = random.choice(unvisited_neighbours)
             maze.connect_path(current, chosen)
             current = chosen
+            if len(current_solution) > len(longest_solution):
+                longest_solution = current_solution.copy()
+                longest_solution.append(current)
         else:
-            current = solution.pop()
+            current = current_solution.pop()
 
-    return maze, solution
+    return maze, longest_solution
