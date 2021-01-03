@@ -9,13 +9,13 @@ def random_walk(size: int) -> Tuple[mazes.Maze, List[mazes.Coord]]:
 
     start = (random.randrange(size), random.randrange(size))
 
-    # random walk
     current = start
     current_solution = []
     longest_solution = []
     while len(maze.paths) < (size * size):
         unvisited_neighbours = [
-            neighbour for neighbour in maze.neighbours(current)
+            neighbour
+            for neighbour in maze.neighbours(current)
             if neighbour not in maze.paths
         ]
         if len(unvisited_neighbours) > 0:
