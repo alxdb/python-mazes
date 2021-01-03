@@ -1,31 +1,57 @@
-from typing import List
-import itertools
+import math
+
+import cairo
 
 import mazes
 
 
-def to_grid(maze: mazes.Maze) -> List[List[bool]]:
-    grid_size = (maze.size * 2) + 1
-    grid = [[False] * grid_size for _ in range(grid_size)]
+def draw_maze(maze: mazes.Maze, start: mazes.Coord, end: mazes.Coord,
+              scale=10, line_width=0.1):
+    cell_size = scale
+    margin = 10
+    image_size = (maze.size * cell_size) + (2 * margin)
+    surface = cairo.SVGSurface("image.svg", image_size, image_size)
+    ctx = cairo.Context(surface)
 
-    for gy, gx in itertools.product(range(grid_size), repeat=2):
-        on_y = gy % 2 == 1
-        on_x = gx % 2 == 1
-        edge_y = gy == 0 or gy == (grid_size - 1)
-        edge_x = gx == 0 or gx == (grid_size - 1)
+    ctx.translate(margin, margin)
+    ctx.scale(cell_size, cell_size)
+    ctx.set_source_rgb(0.0, 0.0, 0.0)
+    ctx.set_line_width(line_width)
+    ctx.set_line_cap(cairo.LINE_CAP_SQUARE)
 
-        if on_x and on_y:
-            grid[gy][gx] = True
-        elif not (edge_y or edge_x):
-            if on_x:
-                x = gx // 2
-                y1 = (gy - 1) // 2
-                y2 = (gy + 1) // 2
-                grid[gy][gx] = (y1, x) in maze.paths[(y2, x)]
-            elif on_y:
-                y = gy // 2
-                x1 = (gx - 1) // 2
-                x2 = (gx + 1) // 2
-                grid[gy][gx] = (y, x1) in maze.paths[(y, x2)]
+    # checkerboard pattern
+    for y in range(maze.size):
+        for x in range(0, maze.size, 2):
+            x = x + (y % 2)
+            for neighbour in maze.neighbours((x, y)):
+                if neighbour not in maze.paths[(x, y)]:
+                    if neighbour == (x, y - 1):
+                        ctx.move_to(x, y)
+                        ctx.line_to(x + 1, y)
+                    elif neighbour == (x + 1, y):
+                        ctx.move_to(x + 1, y)
+                        ctx.line_to(x + 1, y + 1)
+                    elif neighbour == (x, y + 1):
+                        ctx.move_to(x, y + 1)
+                        ctx.line_to(x + 1, y + 1)
+                    elif neighbour == (x - 1, y):
+                        ctx.move_to(x, y)
+                        ctx.line_to(x, y + 1)
+                ctx.stroke()
 
-    return grid
+    ctx.move_to(0, 0)
+    ctx.line_to(maze.size, 0)
+    ctx.line_to(maze.size, maze.size)
+    ctx.line_to(0, maze.size)
+    ctx.line_to(0, 0)
+    ctx.stroke()
+
+    ctx.set_source_rgb(1.0, 0.0, 0.0)
+    ctx.arc(start[0] + 0.5, start[1] + 0.5, 0.4, 0.0, math.pi * 2)
+    ctx.stroke()
+
+    ctx.set_source_rgb(0.0, 0.0, 1.0)
+    ctx.arc(end[0] + 0.5, end[1] + 0.5, 0.4, 0.0, math.pi * 2)
+    ctx.stroke()
+
+    surface.finish()
