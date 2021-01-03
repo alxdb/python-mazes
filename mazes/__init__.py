@@ -16,7 +16,6 @@ class Maze:
             if 0 <= n_x < self.size and 0 <= n_y < self.size:
                 yield coord[0] + x, coord[1] + y
 
-    def connect_path(self, a, b):
+    def connect_path(self, a: Coord, b: Coord) -> None:
         self.paths.setdefault(a, set()).add(b)
         self.paths.setdefault(b, set()).add(a)
-
