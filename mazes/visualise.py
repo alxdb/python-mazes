@@ -2,14 +2,14 @@ import math
 
 import cairo
 
-import mazes
+from mazes import Maze, Coord
 
 
 def draw_maze(
     filename: str,
-    maze: mazes.Maze,
-    start: mazes.Coord,
-    end: mazes.Coord,
+    maze: Maze,
+    start: Coord,
+    end: Coord,
     scale: int = 10,
     margin: int = 10,
     line_width: float = 0.1,

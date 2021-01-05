@@ -1,11 +1,11 @@
 from typing import List, Tuple
 
-import mazes
+from mazes import Maze, Coord
 import random
 
 
-def random_walk(size: int) -> Tuple[mazes.Maze, List[mazes.Coord]]:
-    maze = mazes.Maze(size)
+def random_walk(size: int) -> Tuple[Maze, List[Coord]]:
+    maze = Maze(size)
 
     start = (random.randrange(size), random.randrange(size))
 
