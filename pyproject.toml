@@ -10,6 +10,7 @@ pycairo = "^1.20.0"
 
 [tool.poetry.dev-dependencies]
 black = "20.8b1"
+ipython = "^7.20.0"
 
 [tool.black]
 line-length = 79
