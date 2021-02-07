@@ -1,13 +1,13 @@
 from typing import Set, Dict, Tuple, Iterator
 
-Coord = Tuple[int, int]
+Coord = tuple[int, int]
 
 
 class Maze:
     def __init__(self, size: int):
         assert size > 1
         self.size: int = size
-        self.paths: Dict[Coord, Set[Coord]] = {}
+        self.paths: dict[Coord, set[Coord]] = {}
 
     def neighbours(self, coord: Coord) -> Iterator[Coord]:
         for x, y in [(1, 0), (0, 1), (-1, 0), (0, -1)]:

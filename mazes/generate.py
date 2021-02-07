@@ -1,32 +1,28 @@
-from typing import List, Tuple
-
 from mazes import Maze, Coord
 import random
 
 
-def random_walk(size: int) -> Tuple[Maze, List[Coord]]:
+def random_walk(size: int) -> tuple[Maze, list[Coord]]:
     maze = Maze(size)
 
     start = (random.randrange(size), random.randrange(size))
 
-    current = start
-    current_solution = []
-    longest_solution = []
-    while len(maze.paths) < (size * size):
+    current_solution = [start]
+    longest_solution = current_solution.copy()
+    seen = {start}
+    while len(seen) < (size ** 2):
+        current = current_solution[-1]
         unvisited_neighbours = [
-            neighbour
-            for neighbour in maze.neighbours(current)
-            if neighbour not in maze.paths
+            n for n in maze.neighbours(current) if n not in seen
         ]
-        if len(unvisited_neighbours) > 0:
-            current_solution.append(current)
+        if unvisited_neighbours:
             chosen = random.choice(unvisited_neighbours)
+            current_solution.append(chosen)
+            seen.add(chosen)
             maze.connect_path(current, chosen)
-            current = chosen
+        else:
             if len(current_solution) > len(longest_solution):
                 longest_solution = current_solution.copy()
-                longest_solution.append(current)
-        else:
-            current = current_solution.pop()
+            current_solution.pop()
 
     return maze, longest_solution
